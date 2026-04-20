@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="VoicelineRegistry" format=3 uid="uid://ckavhryovr85i"]
+
+[ext_resource type="Script" uid="uid://p6ofp0md3hll" path="res://AudioManager/Scripts/Resources/AudioEntries/SFXEntry.gd" id="1_g3q8y"]
+[ext_resource type="Script" uid="uid://rm7a2e81r7tc" path="res://AudioManager/Scripts/Resources/AudioRegistries/VoicelineRegistry.gd" id="2_du65w"]
+
+[resource]
+script = ExtResource("2_du65w")
+metadata/_custom_type_script = "uid://rm7a2e81r7tc"

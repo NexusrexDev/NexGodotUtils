@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="UIRegistry" format=3 uid="uid://bvo08b4bfmjee"]
+
+[ext_resource type="Script" uid="uid://p6ofp0md3hll" path="res://AudioManager/Scripts/Resources/AudioEntries/SFXEntry.gd" id="1_a0shk"]
+[ext_resource type="Script" uid="uid://ds2v15yq30oqk" path="res://AudioManager/Scripts/Resources/AudioRegistries/UIRegistry.gd" id="2_ut4og"]
+
+[resource]
+script = ExtResource("2_ut4og")
+metadata/_custom_type_script = "uid://ds2v15yq30oqk"

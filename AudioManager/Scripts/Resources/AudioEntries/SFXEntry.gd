@@ -31,3 +31,19 @@ class_name SFXEntry extends Resource
 
 @export_subgroup("3D")
 @export var attenuation_model_3d: AudioStreamPlayer3D.AttenuationModel = AudioStreamPlayer3D.ATTENUATION_INVERSE_DISTANCE
+
+var _last_played_index: int = -1
+
+func _get_stream_path() -> String:
+    if streams.is_empty():
+        return ""
+    
+    if streams.size() == 1:
+        return streams[0]
+    
+    var pick: int = randi() % streams.size()
+    if pick == _last_played_index:
+        pick = (pick + 1) % streams.size()
+
+    _last_played_index = pick
+    return streams[pick]

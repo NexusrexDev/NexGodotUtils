@@ -15,7 +15,7 @@ func _validate_stream() -> void:
         return
         
     if stream_path.ends_with(".tres") or stream_path.ends_with(".res"):
-        var res_type: String = ResourceLoader.get_resource_type(stream_path)
+        var res_type: String = EditorInterface.get_resource_filesystem().get_file_type(stream_path)
         
         if not ClassDB.is_parent_class(res_type, "AudioStream"):
             printerr("MusicEntry Error: The file '%s' is a '%s', NOT an AudioStream!" % [stream_path.get_file(), res_type])

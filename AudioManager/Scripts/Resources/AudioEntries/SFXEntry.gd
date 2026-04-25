@@ -1,3 +1,4 @@
+@tool
 class_name SFXEntry extends Resource
 
 @export_group("Audio Files")
@@ -34,7 +35,7 @@ class_name SFXEntry extends Resource
 
 var _last_played_index: int = -1
 
-func _get_stream_path() -> String:
+func get_stream_path() -> String:
     if streams.is_empty():
         return ""
     
@@ -47,3 +48,9 @@ func _get_stream_path() -> String:
 
     _last_played_index = pick
     return streams[pick]
+
+func get_pitch_offset() -> float:
+    return randf_range(min_pitch, max_pitch)
+
+func get_volume_offset() -> float:
+    return randf_range(min_volume, max_volume)

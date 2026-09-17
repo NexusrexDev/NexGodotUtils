@@ -1,3 +1,3 @@
-class_name UIRegistry extends Resource
+class_name UIAudioRegistry extends Resource
 
 @export var registry: Dictionary[AudioEnums.UI, SFXEntry] = {}

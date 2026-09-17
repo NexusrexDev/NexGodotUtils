@@ -1,7 +1,7 @@
 class_name Spatial2DAudioPool extends BaseAudioPool
 
-func initialize(max_voices: int, bus: AudioEnums.Buses) -> void:
-    _initialize_base(max_voices, bus, AudioStreamPlayer2D)
+func initialize(max_voices: int, bus: AudioEnums.Buses, duck_volume_db: float, process_mode: Node.ProcessMode = Node.ProcessMode.PROCESS_MODE_PAUSABLE) -> void:
+    _initialize_base(max_voices, bus, AudioStreamPlayer2D, duck_volume_db, process_mode)
 
 func play_positioned(stream: AudioStream, entry: SFXEntry, position: Vector2) -> void:
     var player: AudioStreamPlayer2D = _get_available_base() as AudioStreamPlayer2D

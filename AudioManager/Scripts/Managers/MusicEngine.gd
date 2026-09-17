@@ -6,14 +6,22 @@ var _current_player: AudioStreamPlayer = _player_A
 
 var _current_entry: MusicEntry = null
 
+var _last_playback_pos: float = -1.0
+var _is_ducking: bool = false
+var _duck_volume_db: float = -5.0
+
 const ON_VOLUME_DB: float = 0.0
 const OFF_VOLUME_DB: float = -80.0
 
 func _ready() -> void:
     add_child(_player_A)
     add_child(_player_B)
+    _player_A.bus = AudioEnums.Buses.keys()[AudioEnums.Buses.MUSIC]
+    _player_B.bus = AudioEnums.Buses.keys()[AudioEnums.Buses.MUSIC]
 
-### Core Functionality
+func _initialize(duck_volume_db: float, process_mode: Node.ProcessMode = Node.ProcessMode.PROCESS_MODE_INHERIT) -> void:
+    _duck_volume_db = duck_volume_db
+    process_mode = process_mode
 
 func play(stream: AudioStream, entry: MusicEntry, crossfade_time: float = 0.0) -> void:
     if not stream or not entry:
@@ -31,7 +39,13 @@ func play(stream: AudioStream, entry: MusicEntry, crossfade_time: float = 0.0) -
         _play_immediately(stream, entry)
 
 func pause() -> void:
+    _last_playback_pos = _current_player.get_playback_position()
     _current_player.stop()
+
+func unpause() -> void:
+    if _last_playback_pos >= 0.0:
+        _current_player.play(_last_playback_pos)
+        _last_playback_pos = -1.0
 
 func stop(fadeout_time: float = 0.0) -> void:
     if fadeout_time > 0.0:
@@ -81,12 +95,18 @@ func toggle_stem(index: int, enable: bool, fade_time: float = 0.0) -> void:
     if sync_stream:
         _toggle_stem_on_resource(sync_stream, index, enable, fade_time)
 
-### Helpers
+func toggle_ducking(enable: bool) -> void:
+    if _is_ducking == enable:
+        return
+
+    _is_ducking = enable
+    var target_volume_db: float = _duck_volume_db if enable else ON_VOLUME_DB
+    _current_player.volume_db = target_volume_db
 
 func _play_immediately(stream: AudioStream, entry: MusicEntry) -> void:
     _current_player.stop()
     _current_player.stream = stream
-    _current_player.volume_db = entry.volume_offset
+    _current_player.volume_db = entry.volume_offset + (_duck_volume_db if _is_ducking else 0.0)
     _current_player.play()
 
 func _crossfade_to(stream: AudioStream, entry: MusicEntry, crossfade_time: float) -> void:
@@ -96,7 +116,7 @@ func _crossfade_to(stream: AudioStream, entry: MusicEntry, crossfade_time: float
     next_player.play()
     var fade_tween: Tween = get_tree().create_tween()
     fade_tween.tween_property(_current_player, "volume_db", OFF_VOLUME_DB, crossfade_time)
-    fade_tween.parallel().tween_property(next_player, "volume_db", entry.volume_offset, crossfade_time)
+    fade_tween.parallel().tween_property(next_player, "volume_db", entry.volume_offset + (_duck_volume_db if _is_ducking else 0.0), crossfade_time)
     fade_tween.tween_callback(_swap_players)
 
 func _swap_players() -> void:

@@ -2,10 +2,10 @@ class_name AudioEnums extends RefCounted
 
 enum Buses
 {
-    Master,
-    Music,
+    MASTER,
+    MUSIC,
     SFX,
-    Voice,
+    VOICE,
     UI
 }
 

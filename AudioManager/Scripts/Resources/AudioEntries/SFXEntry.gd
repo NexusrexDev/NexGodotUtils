@@ -2,7 +2,7 @@
 class_name SFXEntry extends Resource
 
 @export_group("Audio Files")
-@export_file("*.wav", "*.ogg", "*.mp3") var streams: Array[String] = []
+@export var streams: Array[AudioStream] = []
 
 @export_group("Pitch Jitter (Linear)")
 @export_range(0.1, 4.0) var min_pitch: float = 1.0:
@@ -35,9 +35,9 @@ class_name SFXEntry extends Resource
 
 var _last_played_index: int = -1
 
-func get_stream_path() -> String:
+func get_stream_path() -> AudioStream:
     if streams.is_empty():
-        return ""
+        return null
     
     if streams.size() == 1:
         return streams[0]

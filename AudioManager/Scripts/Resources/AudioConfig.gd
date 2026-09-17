@@ -36,13 +36,6 @@ class_name AudioConfig extends Resource
 @export var max_3d_sfx_voices: int = 32
 @export var max_voiceline_voices: int = 1
 
-@export_group("Garbage Collection")
-@export var enable_gc: bool = true:
-    set(value):
-        enable_gc = value
-        notify_property_list_changed()
-@export var gc_interval_minutes: float = 5.0
-
 @export_group("Pause Features")
 @export var stop_on_pause: PauseOptions = PauseOptions.SFX
 @export var enable_effects_on_pause: bool = true:
@@ -55,7 +48,7 @@ class_name AudioConfig extends Resource
 @export var enable_ducking_on_voiceline: bool = true
 
 @export_group("Registries")
-@export var ui_registry: UIRegistry
+@export var ui_registry: UIAudioRegistry
 @export var sfx_registry: SFXRegistry
 @export var music_registry: MusicRegistry
 @export var voiceline_registry: VoicelineRegistry
@@ -81,9 +74,6 @@ func _validate_property(property: Dictionary) -> void:
         property.usage &= ~PROPERTY_USAGE_EDITOR
 
     if property.name in ["max_voiceline_voices", "enable_ducking_on_voiceline"] and not enable_voicelines:
-        property.usage &= ~PROPERTY_USAGE_EDITOR
-    
-    if property.name == "gc_interval_minutes" and not enable_gc:
         property.usage &= ~PROPERTY_USAGE_EDITOR
 
     if property.name == "effects_on_pause" and not enable_effects_on_pause:

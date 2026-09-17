@@ -1,7 +1,8 @@
 class_name NonSpatialAudioPool extends BaseAudioPool
 
-func initialize(max_voices: int, bus: AudioEnums.Buses, duck_volume_db: float, process_mode: Node.ProcessMode = Node.ProcessMode.PROCESS_MODE_PAUSABLE) -> void:
-    _initialize_base(max_voices, bus, AudioStreamPlayer, duck_volume_db, process_mode)
+func _init(node_name: String, max_voices: int, bus: AudioEnums.Buses, duck_volume_db: float, process_mode_set: Node.ProcessMode = Node.ProcessMode.PROCESS_MODE_PAUSABLE) -> void:
+    name = node_name
+    _initialize_base(max_voices, bus, AudioStreamPlayer, duck_volume_db, process_mode_set)
 
 func play(stream: AudioStream, entry: SFXEntry) -> void:
     var player: AudioStreamPlayer = _get_available_base() as AudioStreamPlayer

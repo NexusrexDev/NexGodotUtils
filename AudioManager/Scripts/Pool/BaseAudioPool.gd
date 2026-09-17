@@ -7,15 +7,16 @@ var _duck_volume_db: float = -5.0
 
 signal voice_ended(player: AudioStreamPlayer)
 
-func _initialize_base(max_voices: int, bus: AudioEnums.Buses, node_class: Variant, duck_volume_db: float, process_mode: Node.ProcessMode = Node.ProcessMode.PROCESS_MODE_PAUSABLE) -> void:
+func _initialize_base(max_voices: int, bus: AudioEnums.Buses, node_class: Variant, duck_volume_db: float, process_mode_set: Node.ProcessMode = Node.ProcessMode.PROCESS_MODE_PAUSABLE) -> void:
     var bus_name: StringName = AudioEnums.Buses.keys()[bus]
+    _duck_volume_db = duck_volume_db
     
     for i in range(max_voices):
         var player: Variant = node_class.new()
         player.bus = bus_name
         add_child(player)
         _pool.append(player)
-        player.process_mode = process_mode
+        player.process_mode = process_mode_set
 
 func _get_available_base() -> Variant:
     var player: Variant = _pool[_current_index]

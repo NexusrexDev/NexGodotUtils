@@ -19,9 +19,10 @@ func _ready() -> void:
     _player_A.bus = AudioEnums.Buses.keys()[AudioEnums.Buses.MUSIC]
     _player_B.bus = AudioEnums.Buses.keys()[AudioEnums.Buses.MUSIC]
 
-func _initialize(duck_volume_db: float, process_mode: Node.ProcessMode = Node.ProcessMode.PROCESS_MODE_INHERIT) -> void:
+func _init(duck_volume_db: float, process_mode_set: Node.ProcessMode = Node.ProcessMode.PROCESS_MODE_INHERIT) -> void:
     _duck_volume_db = duck_volume_db
-    process_mode = process_mode
+    process_mode = process_mode_set
+    name = "MusicEngine"
 
 func play(stream: AudioStream, entry: MusicEntry, crossfade_time: float = 0.0) -> void:
     if not stream or not entry:

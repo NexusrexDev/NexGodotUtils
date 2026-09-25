@@ -1,8 +1,0 @@
-[gd_resource type="Resource" script_class="MusicRegistry" format=3 uid="uid://ciudrop7sgs07"]
-
-[ext_resource type="Script" uid="uid://cynj4lm7l20xn" path="res://AudioManager/Scripts/Resources/AudioEntries/MusicEntry.gd" id="1_805mw"]
-[ext_resource type="Script" uid="uid://ky0p5ykwvfi3" path="res://AudioManager/Scripts/Resources/AudioRegistries/MusicRegistry.gd" id="2_1hsgk"]
-
-[resource]
-script = ExtResource("2_1hsgk")
-metadata/_custom_type_script = "uid://ky0p5ykwvfi3"

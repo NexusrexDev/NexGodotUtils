@@ -1,8 +1,0 @@
-[gd_resource type="Resource" script_class="SFXRegistry" format=3 uid="uid://cyph0y832l7kh"]
-
-[ext_resource type="Script" uid="uid://p6ofp0md3hll" path="res://AudioManager/Scripts/Resources/AudioEntries/SFXEntry.gd" id="1_qy4tg"]
-[ext_resource type="Script" uid="uid://df8rcbmqtp525" path="res://AudioManager/Scripts/Resources/AudioRegistries/SFXRegistry.gd" id="2_nsi6r"]
-
-[resource]
-script = ExtResource("2_nsi6r")
-metadata/_custom_type_script = "uid://df8rcbmqtp525"

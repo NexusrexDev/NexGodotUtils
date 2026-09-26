@@ -43,7 +43,7 @@ func _ready() -> void:
 		return
 	
 	if _config.enable_music:
-		var _music_process_mode: Node.ProcessMode = Node.ProcessMode.PROCESS_MODE_INHERIT if _config.pause_on_pause == AudioConfig.PauseOptions.SFX else Node.ProcessMode.PROCESS_MODE_PAUSABLE
+		var _music_process_mode: Node.ProcessMode = Node.ProcessMode.PROCESS_MODE_ALWAYS if _config.pause_on_pause == AudioConfig.PauseOptions.SFX else Node.ProcessMode.PROCESS_MODE_PAUSABLE
 		_music_engine = MusicEngine.new(_config.ducking_volume_db, _music_process_mode)
 		add_child(_music_engine)
 
@@ -60,13 +60,15 @@ func _ready() -> void:
 		add_child(_sfx_pool_global)
 
 	if _config.enable_ui_audio:
-		_ui_audio_pool = NonSpatialAudioPool.new("UI Audio", _config.max_ui_voices, AudioEnums.Buses.UI, _config.ducking_volume_db, Node.ProcessMode.PROCESS_MODE_INHERIT)
+		_ui_audio_pool = NonSpatialAudioPool.new("UI Audio", _config.max_ui_voices, AudioEnums.Buses.UI, _config.ducking_volume_db, Node.ProcessMode.PROCESS_MODE_ALWAYS)
 		add_child(_ui_audio_pool)
 
 	if _config.enable_voicelines:
 		_voiceline_pool = NonSpatialAudioPool.new("Voicelines", _config.max_voiceline_voices, AudioEnums.Buses.VOICE, _config.ducking_volume_db, Node.ProcessMode.PROCESS_MODE_PAUSABLE)
 		add_child(_voiceline_pool)
 		_voiceline_pool.voice_ended.connect(_handle_voiceline_ended)
+
+	process_mode = ProcessMode.PROCESS_MODE_ALWAYS
 
 	_generate_bus_cache()
 
@@ -82,14 +84,14 @@ func _toggle_pause_effects(paused: bool) -> void:
 		return
 
 	if paused:
-		if _config.pause_on_pause != AudioConfig.PauseOptions.MUSIC_AND_SFX:
+		if _config.pause_on_pause == AudioConfig.PauseOptions.SFX:
 			for effect in _config.effects_on_pause:
-				AudioServer.add_bus_effect(AudioServer.get_bus_index("Master"), effect, 0)
+				AudioServer.add_bus_effect(_bus_cache[AudioEnums.Buses.MUSIC], effect, 0)
 
 	if not paused:
-		if _config.pause_on_pause != AudioConfig.PauseOptions.MUSIC_AND_SFX:
+		if _config.pause_on_pause == AudioConfig.PauseOptions.SFX:
 			for effect in _config.effects_on_pause:
-				AudioServer.remove_bus_effect(AudioServer.get_bus_index("Master"), 0)
+				AudioServer.remove_bus_effect(_bus_cache[AudioEnums.Buses.MUSIC], 0)
 
 func _handle_voiceline_ended(_player: AudioStreamPlayer) -> void:
 	if _missing_data:

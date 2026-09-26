@@ -13,3 +13,6 @@ class_name MusicEntry extends Resource
 func _validate_stream() -> void:
     if not Engine.is_editor_hint() or stream.is_empty():
         return
+
+func _get_stream() -> AudioStream:
+    return stream

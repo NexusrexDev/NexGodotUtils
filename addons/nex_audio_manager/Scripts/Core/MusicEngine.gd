@@ -16,22 +16,27 @@ const OFF_VOLUME_DB: float = -80.0
 func _ready() -> void:
     add_child(_player_A)
     add_child(_player_B)
-    _player_A.bus = AudioEnums.Buses.keys()[AudioEnums.Buses.MUSIC]
-    _player_B.bus = AudioEnums.Buses.keys()[AudioEnums.Buses.MUSIC]
+    _player_A.bus = AudioEnums.get_bus_name(AudioEnums.Buses.MUSIC)
+    _player_B.bus = AudioEnums.get_bus_name(AudioEnums.Buses.MUSIC)
 
 func _init(duck_volume_db: float, process_mode_set: Node.ProcessMode = Node.ProcessMode.PROCESS_MODE_INHERIT) -> void:
     _duck_volume_db = duck_volume_db
     process_mode = process_mode_set
     name = "MusicEngine"
 
-func play(stream: AudioStream, entry: MusicEntry, crossfade_time: float = 0.0) -> void:
-    if not stream or not entry:
-        printerr("MusicEngine Error: Invalid stream or entry provided to play()")
+func play(entry: MusicEntry, crossfade_time: float = 0.0) -> void:
+    if not entry:
+        printerr("MusicEngine Error: Invalid stream play()")
         return
 
     if _current_entry == entry:
         return
 
+    var stream: AudioStream = entry.get_stream()
+    if not stream:
+        printerr("MusicEngine Error: Invalid AudioStream provided to play()")
+        return
+    
     _current_entry = entry
 
     if crossfade_time > 0.0:

@@ -43,13 +43,9 @@ func _on_submenu_id_pressed(id: int) -> void:
             _setup_buses_from_enum()
 
 func _setup_buses_from_enum() -> void:
-    var keys: Array = AudioEnums.Buses.keys()
+    for key_index in AudioEnums.Buses.values():
+        var bus_name: String = AudioEnums.get_bus_name(key_index)
 
-    for key in keys:
-        var bus_name: String = key.capitalize()
-        if key in ["SFX", "UI"]:
-            bus_name = key
-            
         if AudioServer.get_bus_index(bus_name) != -1:
             continue
             

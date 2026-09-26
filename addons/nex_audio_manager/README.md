@@ -21,7 +21,7 @@ A simple plugin that adds an autoload (`AudioManager`) that wraps music, SFX (Sp
 ## Features
 - Simple autoload singleton to interface with the music and sfx submodules, accessed through `AudioManager`. (Check the class' documentation for methods)
 ```gdscript
-AudioManager.play_sfx_global(AudioEnums.SFX.JUMP)
+AudioManager.play_sfx_nonspatial(AudioEnums.SFX.JUMP)
 AudioManager.play_music(AudioEnums.Music.TRACK_1, 1.5)
 ```
 - Enums to assign entries in the audio busses and the registries, and to call methods instead of referring to `AudioStream` resources. (Add more enum values in `Scripts/Resources/AudioEnums.gd`)

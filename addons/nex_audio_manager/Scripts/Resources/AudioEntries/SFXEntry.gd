@@ -35,7 +35,7 @@ class_name SFXEntry extends Resource
 
 var _last_played_index: int = -1
 
-func get_stream_path() -> AudioStream:
+func get_stream() -> AudioStream:
     if streams.is_empty():
         return null
     

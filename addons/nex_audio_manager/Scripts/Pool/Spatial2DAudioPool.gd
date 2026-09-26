@@ -4,17 +4,17 @@ func _init(node_name: String, max_voices: int, bus: AudioEnums.Buses, duck_volum
     name = node_name
     _initialize_base(max_voices, bus, AudioStreamPlayer2D, duck_volume_db, process_mode_set)
 
-func play_positioned(stream: AudioStream, entry: SFXEntry, position: Vector2, pitch: float = INF, volume: float = INF) -> void:
+func play_positioned(entry: SFXEntry, position: Vector2, pitch: float = INF, volume: float = INF) -> void:
     var player: AudioStreamPlayer2D = _get_available_base() as AudioStreamPlayer2D
     if not player: return
 
     player.global_position = position
 
-    _setup_player(player, stream, entry, pitch, volume)
+    _setup_player(player, entry, pitch, volume)
 
     player.play()
 
-func play_targeted(stream: AudioStream, entry: SFXEntry, target: Node2D, pitch: float = INF, volume: float = INF) -> void:
+func play_targeted(entry: SFXEntry, target: Node2D, pitch: float = INF, volume: float = INF) -> void:
     var player: AudioStreamPlayer2D = _get_available_base() as AudioStreamPlayer2D
     if not player: return
 
@@ -27,7 +27,7 @@ func play_targeted(stream: AudioStream, entry: SFXEntry, target: Node2D, pitch: 
     remote_transform.update_rotation = false
     remote_transform.update_scale = false
 
-    _setup_player(player, stream, entry, pitch, volume)
+    _setup_player(player, entry, pitch, volume)
 
     player.play()
 
@@ -38,7 +38,11 @@ func play_targeted(stream: AudioStream, entry: SFXEntry, target: Node2D, pitch: 
         player.global_position = Vector2.ZERO
         , CONNECT_ONE_SHOT)
 
-func _setup_player(player: AudioStreamPlayer2D, stream: AudioStream, entry: SFXEntry, pitch: float, volume: float) -> void:
+func _setup_player(player: AudioStreamPlayer2D, entry: SFXEntry, pitch: float, volume: float) -> void:
+    var stream: AudioStream = entry.get_stream()
+    if not stream:
+        printerr("Spatial2DAudioPool Error: Invalid AudioStream provided to _setup_player()")
+        return
     player.stream = stream
 
     if volume != INF:
@@ -50,6 +54,6 @@ func _setup_player(player: AudioStreamPlayer2D, stream: AudioStream, entry: SFXE
         player.pitch_scale = pitch
     else:
         player.pitch_scale = entry.get_pitch_offset()
-        
+
     player.attenuation = entry.attenuation_2d
     player.max_distance = entry.max_distance

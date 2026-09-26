@@ -7,9 +7,9 @@ class_name AudioConfig extends Resource
         enable_ui_audio = value
         notify_property_list_changed()
 
-@export var enable_global_sfx: bool = true:
+@export var enable_nonspatial_sfx: bool = true:
     set(value):
-        enable_global_sfx = value
+        enable_nonspatial_sfx = value
         notify_property_list_changed()
 
 @export var enable_2d_sfx: bool = true:
@@ -22,7 +22,10 @@ class_name AudioConfig extends Resource
         enable_3d_sfx = value
         notify_property_list_changed()
 
-@export var enable_music: bool = true
+@export var enable_music: bool = true:
+    set(value):
+        enable_music = value
+        notify_property_list_changed()
 
 @export var enable_voicelines: bool = false:
     set(value):
@@ -31,7 +34,7 @@ class_name AudioConfig extends Resource
 
 @export_group("Pooling")
 @export var max_ui_voices: int = 8
-@export var max_global_sfx_voices: int = 32
+@export var max_nonspatial_sfx_voices: int = 32
 @export var max_2d_sfx_voices: int = 32
 @export var max_3d_sfx_voices: int = 32
 @export var max_voiceline_voices: int = 1
@@ -66,7 +69,7 @@ func _validate_property(property: Dictionary) -> void:
     if property.name == "max_ui_voices" and not enable_ui_audio:
         property.usage &= ~PROPERTY_USAGE_EDITOR
 
-    if property.name == "max_global_sfx_voices" and not enable_global_sfx:
+    if property.name == "max_nonspatial_sfx_voices" and not enable_nonspatial_sfx:
         property.usage &= ~PROPERTY_USAGE_EDITOR
 
     if property.name == "max_2d_sfx_voices" and not enable_2d_sfx:
@@ -82,4 +85,16 @@ func _validate_property(property: Dictionary) -> void:
         property.usage &= ~PROPERTY_USAGE_EDITOR
 
     if property.name == "effects_on_pause" and pause_on_pause == PauseOptions.MUSIC_AND_SFX:
+        property.usage &= ~PROPERTY_USAGE_EDITOR
+    
+    if property.name == "music_registry" and not enable_music:
+        property.usage &= ~PROPERTY_USAGE_EDITOR
+    
+    if property.name == "voiceline_registry" and not enable_voicelines:
+        property.usage &= ~PROPERTY_USAGE_EDITOR
+    
+    if property.name == "sfx_registry" and not (enable_nonspatial_sfx or enable_2d_sfx or enable_3d_sfx):
+        property.usage &= ~PROPERTY_USAGE_EDITOR
+
+    if property.name == "ui_registry" and not enable_ui_audio:
         property.usage &= ~PROPERTY_USAGE_EDITOR

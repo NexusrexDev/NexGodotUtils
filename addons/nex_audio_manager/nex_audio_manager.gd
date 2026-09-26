@@ -3,7 +3,7 @@ extends EditorPlugin
 
 const AUDIO_MANAGER_PATH: String = "res://addons/nex_audio_manager/Scripts/Core/AudioManager.gd"
 const BUS_LAYOUT_PATH: String = "res://addons/nex_audio_manager/Resources/bus_layout.tres"
-const CONFIG_SETTING_PATH: String = "nex_audio_manager/active_config"
+const CONFIG_SETTING_PATH: String = "plugins/nex_audio_manager/active_config"
 
 var _submenu: PopupMenu
 var _config_dialog: EditorFileDialog

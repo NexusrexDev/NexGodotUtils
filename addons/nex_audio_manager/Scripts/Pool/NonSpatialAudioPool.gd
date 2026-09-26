@@ -4,14 +4,22 @@ func _init(node_name: String, max_voices: int, bus: AudioEnums.Buses, duck_volum
     name = node_name
     _initialize_base(max_voices, bus, AudioStreamPlayer, duck_volume_db, process_mode_set)
 
-func play(stream: AudioStream, entry: SFXEntry) -> void:
+func play(stream: AudioStream, entry: SFXEntry, pitch: float = INF, volume: float = INF) -> void:
     var player: AudioStreamPlayer = _get_available_base() as AudioStreamPlayer
 
     if not player: return
 
     player.stream = stream
-    player.volume_db = entry.get_volume_offset()
-    player.pitch_scale = entry.get_pitch_offset()
+
+    if volume != INF:
+        player.volume_db = volume
+    else:
+        player.volume_db = entry.get_volume_offset()
+
+    if pitch != INF:
+        player.pitch_scale = pitch
+    else:
+        player.pitch_scale = entry.get_pitch_offset()
     
     player.play()
     player.finished.connect(emit_voice_ended.bind(player), CONNECT_ONE_SHOT)

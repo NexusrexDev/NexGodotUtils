@@ -147,67 +147,67 @@ func toggle_music_stem(index: int, enable: bool, fade_time: float = 0.0) -> void
 
 #region 3D SFX Control
 
-func play_sfx_3d_positioned(sfx_enum: AudioEnums.SFX, position: Vector3) -> void:
+func play_sfx_3d_positioned(sfx_enum: AudioEnums.SFX, position: Vector3, pitch: float = INF, volume: float = INF) -> void:
 	if not _config.enable_3d_sfx:
 		return
 	var entry: SFXEntry = _config.sfx_registry.get_entry(sfx_enum)
 	if not entry or not entry.stream:
 		printerr("AudioManager Error: Invalid SFXEntry provided to play_sfx_3d_positioned()")
 		return
-	_sfx_pool_3d.play_positioned(entry.stream, entry, position)
+	_sfx_pool_3d.play_positioned(entry.stream, entry, position, pitch, volume)
 
-func play_sfx_3d_targeted(sfx_enum: AudioEnums.SFX, target: Node3D) -> void:
+func play_sfx_3d_targeted(sfx_enum: AudioEnums.SFX, target: Node3D, pitch: float = INF, volume: float = INF) -> void:
 	if not _config.enable_3d_sfx:
 		return
 	var entry: SFXEntry = _config.sfx_registry.get_entry(sfx_enum)
 	if not entry or not entry.stream:
 		printerr("AudioManager Error: Invalid SFXEntry provided to play_sfx_3d_targeted()")
 		return
-	_sfx_pool_3d.play_targeted(entry.stream, entry, target)
+	_sfx_pool_3d.play_targeted(entry.stream, entry, target, pitch, volume)
 
 #endregion
 
 #region 2D SFX Control
 
-func play_sfx_2d_positioned(sfx_enum: AudioEnums.SFX, position: Vector2) -> void:
+func play_sfx_2d_positioned(sfx_enum: AudioEnums.SFX, position: Vector2, pitch: float = INF, volume: float = INF) -> void:
 	if not _config.enable_2d_sfx:
 		return
 	var entry: SFXEntry = _config.sfx_registry.get_entry(sfx_enum)
 	if not entry or not entry.stream:
 		printerr("AudioManager Error: Invalid SFXEntry provided to play_sfx_2d_positioned()")
 		return
-	_sfx_pool_2d.play_positioned(entry.stream, entry, position)
+	_sfx_pool_2d.play_positioned(entry.stream, entry, position, pitch, volume)
 
-func play_sfx_2d_targeted(sfx_enum: AudioEnums.SFX, target: Node2D) -> void:
+func play_sfx_2d_targeted(sfx_enum: AudioEnums.SFX, target: Node2D, pitch: float = INF, volume: float = INF) -> void:
 	if not _config.enable_2d_sfx:
 		return
 	var entry: SFXEntry = _config.sfx_registry.get_entry(sfx_enum)
 	if not entry or not entry.stream:
 		printerr("AudioManager Error: Invalid SFXEntry provided to play_sfx_2d_targeted()")
 		return
-	_sfx_pool_2d.play_targeted(entry.stream, entry, target)
+	_sfx_pool_2d.play_targeted(entry.stream, entry, target, pitch, volume)
 
 #endregion
 
 #region Nonspatial SFX, UI, and Voiceline Control
 
-func play_sfx_nonspatial(sfx_enum: AudioEnums.SFX) -> void:
+func play_sfx_nonspatial(sfx_enum: AudioEnums.SFX, pitch: float = INF, volume: float = INF) -> void:
 	if not _config.enable_nonspatial_sfx:
 		return
 	var entry: SFXEntry = _config.sfx_registry.get_entry(sfx_enum)
 	if not entry or not entry.stream:
 		printerr("AudioManager Error: Invalid SFXEntry provided to play_sfx_nonspatial()")
 		return
-	_sfx_pool_nonspatial.play(entry.stream, entry)
+	_sfx_pool_nonspatial.play(entry.stream, entry, pitch, volume)
 
-func play_ui_audio(ui_audio_enum: AudioEnums.UI) -> void:
+func play_ui_audio(ui_audio_enum: AudioEnums.UI, pitch: float = INF, volume: float = INF) -> void:
 	if not _config.enable_ui_audio:
 		return
 	var entry: SFXEntry = _config.ui_registry.get_entry(ui_audio_enum)
 	if not entry or not entry.stream:
 		printerr("AudioManager Error: Invalid UIAudioEntry provided to play_ui_audio()")
 		return
-	_ui_audio_pool.play(entry.stream, entry)
+	_ui_audio_pool.play(entry.stream, entry, pitch, volume)
 
 func play_voiceline(voiceline_enum: AudioEnums.Voiceline) -> void:
 	if not _config.enable_voicelines:

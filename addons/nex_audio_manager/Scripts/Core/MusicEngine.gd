@@ -26,7 +26,7 @@ func _init(duck_volume_db: float, process_mode_set: Node.ProcessMode = Node.Proc
 
 func play(entry: MusicEntry, crossfade_time: float = 0.0) -> void:
     if not entry:
-        printerr("MusicEngine Error: Invalid stream play()")
+        push_error("MusicEngine Error: Invalid stream play()")
         return
 
     if _current_entry == entry:
@@ -34,7 +34,7 @@ func play(entry: MusicEntry, crossfade_time: float = 0.0) -> void:
 
     var stream: AudioStream = entry.get_stream()
     if not stream:
-        printerr("MusicEngine Error: Invalid AudioStream provided to play()")
+        push_error("MusicEngine Error: Invalid AudioStream provided to play()")
         return
     
     _current_entry = entry
@@ -74,7 +74,7 @@ func switch_section(clip_name: StringName) -> void:
         (playback as AudioStreamPlaybackInteractive).switch_to_clip_by_name(clip_name)
         return
         
-    printerr("MusicEngine: Current stream does not support interactive section switching.")
+    push_error("MusicEngine: Current stream does not support interactive section switching.")
 
 func toggle_stem(index: int, enable: bool, fade_time: float = 0.0) -> void:
     var stream: AudioStream = _current_player.stream
@@ -88,14 +88,14 @@ func toggle_stem(index: int, enable: bool, fade_time: float = 0.0) -> void:
         if inner_stream is AudioStreamSynchronized:
             sync_stream = inner_stream
         else:
-            printerr("MusicEngine: Current interactive clip is not an AudioStreamSynchronized.")
+            push_error("MusicEngine: Current interactive clip is not an AudioStreamSynchronized.")
             return
     
     elif stream is AudioStreamSynchronized:
         sync_stream = stream
         
     else:
-        printerr("MusicEngine: Current stream does not support stem toggling.")
+        push_error("MusicEngine: Current stream does not support stem toggling.")
         return
 
     if sync_stream:
@@ -131,7 +131,7 @@ func _swap_players() -> void:
 
 func _toggle_stem_on_resource(sync_stream: AudioStreamSynchronized, index: int, enable: bool, fade_time: float) -> void:
     if index < 0 or index >= sync_stream.stream_count:
-        printerr("MusicEngine: Invalid stem index %d for toggle_stem." % index)
+        push_error("MusicEngine: Invalid stem index %d for toggle_stem." % index)
         return
 
     var target_volume_db: float = ON_VOLUME_DB if enable else OFF_VOLUME_DB

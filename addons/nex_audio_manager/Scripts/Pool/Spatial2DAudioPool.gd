@@ -41,7 +41,7 @@ func play_targeted(entry: SFXEntry, target: Node2D, pitch: float = INF, volume: 
 func _setup_player(player: AudioStreamPlayer2D, entry: SFXEntry, pitch: float, volume: float) -> void:
     var stream: AudioStream = entry.get_stream()
     if not stream:
-        printerr("Spatial2DAudioPool Error: Invalid AudioStream provided to _setup_player()")
+        push_error("Spatial2DAudioPool Error: Invalid AudioStream provided to _setup_player()")
         return
     player.stream = stream
 

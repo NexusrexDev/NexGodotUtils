@@ -107,6 +107,8 @@ class_name AudioConfig extends Resource
 ## Registry of [SFXEntry] resources for voicelines, keyed by [StringName] values.
 ## Required when [member enable_voicelines] is set; hidden otherwise.
 @export var voiceline_registry: VoicelineRegistry
+## Registry of [RTPCData] resources used by [method AudioManager.set_rtpc_value].
+@export var rtpc_registry: RTPCRegistry
 
 ## Determines which audio categories pause together. [constant SFX] pauses only
 ## gameplay SFX and voicelines, leaving music playing (optionally with

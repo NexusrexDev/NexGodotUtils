@@ -43,7 +43,7 @@ func play_targeted(entry: SFXEntry, target: Node3D, pitch: float = INF, volume: 
 func _setup_player(player: AudioStreamPlayer3D, entry: SFXEntry, pitch: float, volume: float) -> void:
     var stream: AudioStream = entry.get_stream()
     if not stream:
-        printerr("Spatial3DAudioPool Error: Invalid AudioStream provided to _setup_player()")
+        push_error("Spatial3DAudioPool Error: Invalid AudioStream provided to _setup_player()")
         return
     player.stream = stream
 

@@ -12,11 +12,22 @@ A simple plugin that adds an autoload (`AudioManager`) that wraps music, SFX (Sp
 5. You can re-run the bus setup at any time from the editor's **Tools** menu under **Nex's Audio Manager > Sync Buses from Enum**. Use it after you add a new bus to the enum.
 6. Disabling the plugin removes the autoload, and clears both the default bus layout and the project settings (it does not delete the underlying `.tres` files).
 
-## Filling Registries
+## Settubg up registries
 1. Create/open a registry's `.tres` file and expand its `registry` dictionary.
 2. Add an entry per `StringName` key you want to support, e.g. `&"jump" -> <a resource>`.
 3. For the value, create a `MusicEntry` or `SFXEntry` inline and fill it in.
 4. Assign the registry to its slots on your `AudioConfig`.
+
+## Setting Up RTPCs
+1. Create a `RTPCRegistry` resource and assign it to the `rtpc_registry` field on your `AudioConfig`.
+2. Expand the registry's `registry` array and add an `RTPCData` resource.
+3. Set the `parameter_id` to the `StringName` you will pass to `AudioManager.set_rtpc_value`, such as `&"underwater"`.
+4. Add an `RTPCEffectBinding` to the RTPC's `effect_bindings`, select the target bus, and assign an `AudioEffect` to inject on that bus.
+5. Add an `RTPCParameterMapping` to the binding for each effect property you want to control. Select the target parameter, assign a mapping curve, and set its minimum and maximum values.
+6. Update the parameter at runtime by passing its identifier and a value to `AudioManager.set_rtpc_value`:
+```gdscript
+AudioManager.set_rtpc_value(&"underwater", underwater_amount)
+```
 
 ## Features
 - Simple autoload singleton to interface with the music and sfx submodules, accessed through `AudioManager`. (Check the class' documentation for methods)
@@ -31,3 +42,4 @@ AudioManager.play_music(&"track_1", 1.5)
 - Spatial sound effects with support for both positioned and Node targetting/following settings.
 - Voicelines with toggleable volume ducking.
 - Configurable pause behavior, allowing to only pause gameplay SFX (spatial, nonspatial and voicelines), or both gameplay SFX and music, plus adding effects to apply on the music bus when paused.
+- Real-time parameter controls (RTPCs) that map values through curves to properties on injected audio effects, allowing effects such as environment-driven reverb or low-pass filtering.

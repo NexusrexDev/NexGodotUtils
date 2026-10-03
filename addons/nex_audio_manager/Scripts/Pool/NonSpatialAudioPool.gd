@@ -11,7 +11,7 @@ func play(entry: SFXEntry, pitch: float = INF, volume: float = INF) -> void:
 
     var stream: AudioStream = entry.get_stream()
     if not stream:
-        printerr("NonSpatialAudioPool Error: Invalid AudioStream provided to _setup_player()")
+        push_error("NonSpatialAudioPool Error: Invalid AudioStream provided to _setup_player()")
         return
     player.stream = stream
 

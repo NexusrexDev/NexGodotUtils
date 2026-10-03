@@ -13,6 +13,7 @@ var _ui_audio_pool: NonSpatialAudioPool
 var _voiceline_pool: NonSpatialAudioPool
 
 var _bus_cache: Dictionary[AudioEnums.Buses, int] = {}
+var _rtpc_cache: Dictionary[StringName, Array] = {}
 
 var _config: AudioConfig
 
@@ -24,10 +25,10 @@ func _ready() -> void:
 	process_mode = ProcessMode.PROCESS_MODE_ALWAYS
 	
 	_validate_registries()
-	
 	_instantiate_submodules()
-
 	_generate_bus_cache()
+	_initialize_pause_effects()
+	_initialize_rtpcs()
 
 func _validate_registries() -> void:
 	if _config.enable_music:
@@ -74,6 +75,33 @@ func _generate_bus_cache() -> void:
 		var bus_index: int = AudioServer.get_bus_index(AudioEnums.get_bus_name(bus_enum))
 		_bus_cache[bus_enum] = bus_index
 
+func _initialize_pause_effects() -> void:
+	if _config.pause_on_pause == AudioConfig.PauseOptions.SFX:
+		for effect in _config.effects_on_pause:
+			AudioServer.add_bus_effect(_bus_cache[AudioEnums.Buses.MUSIC], effect)
+			AudioServer.set_bus_effect_enabled(_bus_cache[AudioEnums.Buses.MUSIC], 0, false)
+
+func _initialize_rtpcs() -> void:
+	if not _config.rtpc_registry:
+		return
+	
+	for rtpc in _config.rtpc_registry.get_all_entries():
+		if not rtpc or rtpc.parameter_id.is_empty():
+			continue
+		
+		if not _rtpc_cache.has(rtpc.parameter_id):
+			_rtpc_cache[rtpc.parameter_id] = []
+		
+		_rtpc_cache[rtpc.parameter_id].append(rtpc)
+
+		for binding in rtpc.effect_bindings:
+			if not binding or not binding.injected_effect:
+				continue
+			
+			var bus_index: int = _bus_cache[binding.target_bus]
+			if bus_index != -1:
+				AudioServer.add_bus_effect(_bus_cache[binding.target_bus], binding.injected_effect)
+
 func _notification(what: int) -> void:
 	match what:
 		NOTIFICATION_PAUSED:
@@ -84,13 +112,13 @@ func _notification(what: int) -> void:
 func _toggle_pause_effects(paused: bool) -> void:
 	if paused:
 		if _config.pause_on_pause == AudioConfig.PauseOptions.SFX:
-			for effect in _config.effects_on_pause:
-				AudioServer.add_bus_effect(_bus_cache[AudioEnums.Buses.MUSIC], effect, 0)
+			for i: int in _config.effects_on_pause.size():
+				AudioServer.set_bus_effect_enabled(_bus_cache[AudioEnums.Buses.MUSIC], i, true)
 
 	if not paused:
 		if _config.pause_on_pause == AudioConfig.PauseOptions.SFX:
-			for effect in _config.effects_on_pause:
-				AudioServer.remove_bus_effect(_bus_cache[AudioEnums.Buses.MUSIC], 0)
+			for i: int in _config.effects_on_pause.size():
+				AudioServer.set_bus_effect_enabled(_bus_cache[AudioEnums.Buses.MUSIC], i, false)
 
 func _handle_voiceline_ended(_player: AudioStreamPlayer) -> void:
 	if _config.enable_ducking_on_voiceline:
@@ -116,7 +144,7 @@ func play_music(music_key: StringName, crossfade_time: float = 0.0) -> void:
 		return
 	var entry: MusicEntry = _config.music_registry.get_entry(music_key)
 	if not entry:
-		printerr("AudioManager Error: Invalid MusicEntry provided to play_music()")
+		push_error("AudioManager Error: Invalid MusicEntry provided to play_music()")
 		return
 	_music_engine.play(entry, crossfade_time)
 
@@ -173,7 +201,7 @@ func play_sfx_3d_positioned(sfx_key: StringName, position: Vector3, pitch: float
 		return
 	var entry: SFXEntry = _config.sfx_registry.get_entry(sfx_key)
 	if not entry:
-		printerr("AudioManager Error: Invalid SFXEntry provided to play_sfx_3d_positioned()")
+		push_error("AudioManager Error: Invalid SFXEntry provided to play_sfx_3d_positioned()")
 		return
 	_sfx_pool_3d.play_positioned(entry, position, pitch, volume)
 
@@ -185,7 +213,7 @@ func play_sfx_3d_targeted(sfx_key: StringName, target: Node3D, pitch: float = IN
 		return
 	var entry: SFXEntry = _config.sfx_registry.get_entry(sfx_key)
 	if not entry:
-		printerr("AudioManager Error: Invalid SFXEntry provided to play_sfx_3d_targeted()")
+		push_error("AudioManager Error: Invalid SFXEntry provided to play_sfx_3d_targeted()")
 		return
 	_sfx_pool_3d.play_targeted(entry, target, pitch, volume)
 
@@ -201,7 +229,7 @@ func play_sfx_2d_positioned(sfx_key: StringName, position: Vector2, pitch: float
 		return
 	var entry: SFXEntry = _config.sfx_registry.get_entry(sfx_key)
 	if not entry:
-		printerr("AudioManager Error: Invalid SFXEntry provided to play_sfx_2d_positioned()")
+		push_error("AudioManager Error: Invalid SFXEntry provided to play_sfx_2d_positioned()")
 		return
 	_sfx_pool_2d.play_positioned(entry, position, pitch, volume)
 
@@ -213,7 +241,7 @@ func play_sfx_2d_targeted(sfx_key: StringName, target: Node2D, pitch: float = IN
 		return
 	var entry: SFXEntry = _config.sfx_registry.get_entry(sfx_key)
 	if not entry:
-		printerr("AudioManager Error: Invalid SFXEntry provided to play_sfx_2d_targeted()")
+		push_error("AudioManager Error: Invalid SFXEntry provided to play_sfx_2d_targeted()")
 		return
 	_sfx_pool_2d.play_targeted(entry, target, pitch, volume)
 
@@ -229,7 +257,7 @@ func play_sfx_nonspatial(sfx_key: StringName, pitch: float = INF, volume: float 
 		return
 	var entry: SFXEntry = _config.sfx_registry.get_entry(sfx_key)
 	if not entry:
-		printerr("AudioManager Error: Invalid SFXEntry provided to play_sfx_nonspatial()")
+		push_error("AudioManager Error: Invalid SFXEntry provided to play_sfx_nonspatial()")
 		return
 	_sfx_pool_nonspatial.play(entry, pitch, volume)
 
@@ -242,7 +270,7 @@ func play_ui_audio(ui_audio_key: StringName, pitch: float = INF, volume: float =
 		return
 	var entry: SFXEntry = _config.ui_registry.get_entry(ui_audio_key)
 	if not entry:
-		printerr("AudioManager Error: Invalid UIAudioEntry provided to play_ui_audio()")
+		push_error("AudioManager Error: Invalid UIAudioEntry provided to play_ui_audio()")
 		return
 	_ui_audio_pool.play(entry, pitch, volume)
 
@@ -254,7 +282,7 @@ func play_voiceline(voiceline_key: StringName) -> void:
 		return
 	var entry: SFXEntry = _config.voiceline_registry.get_entry(voiceline_key)
 	if not entry:
-		printerr("AudioManager Error: Invalid VoicelineEntry provided to play_voiceline()")
+		push_error("AudioManager Error: Invalid VoicelineEntry provided to play_voiceline()")
 		return
 	_voiceline_pool.play(entry)
 
@@ -270,6 +298,37 @@ func play_voiceline(voiceline_key: StringName) -> void:
 
 #endregion
 
+#region RTPC Control
+
+## Sets an RTPC value and applies its mapped value to every bound audio effect.
+## The mapping curve transforms [param value] before it is remapped between the
+## configured [RTPCParameterMapping] range. Logs an error if no RTPC uses the
+## provided [param parameter_id].
+func set_rtpc_value(parameter_id: StringName, value: float) -> void:
+	if not _rtpc_cache.has(parameter_id):
+		push_error("AudioManager Error: No RTPC found with parameter_id: %s" % parameter_id)
+		return
+	
+	for rtpc in _rtpc_cache[parameter_id]:
+		for binding in rtpc.effect_bindings:
+			if not binding or not binding.injected_effect:
+				continue
+			
+			var effect: AudioEffect = binding.injected_effect
+			for mapping in binding.parameter_mappings:
+				if not mapping or mapping._parent_effect != binding.injected_effect:
+					continue
+				
+				if not mapping.mapping_curve:
+					push_warning("AudioManager Warning: No mapping curve found for RTPC parameter: %s" % parameter_id)
+					continue
+				
+				var mapped_value: float = mapping.mapping_curve.sample(value)
+				var final_value: float = lerp(mapping.min_value, mapping.max_value, mapped_value)
+				effect.set(mapping.target_parameter, final_value)
+
+#endregion
+
 #region Bus Control
 
 ## Sets the volume, in decibels, of the given logical [param bus].
@@ -281,31 +340,5 @@ func set_bus_volume(bus: AudioEnums.Buses, volume_db: float) -> void:
 func set_bus_mute(bus: AudioEnums.Buses, mute: bool) -> void:
 	var bus_index: int = _bus_cache[bus]
 	AudioServer.set_bus_mute(bus_index, mute)
-
-## Adds [param effect] to the given logical [param bus] at slot [param index].
-func add_bus_effect(bus: AudioEnums.Buses, effect: AudioEffect, index: int) -> void:
-	var bus_index: int = _bus_cache[bus]
-	AudioServer.add_bus_effect(bus_index, effect, index)
-
-## Removes the effect at [param effect_index] from the given logical [param bus].
-func remove_bus_effect(bus: AudioEnums.Buses, effect_index: int) -> void:
-	var bus_index: int = _bus_cache[bus]
-	AudioServer.remove_bus_effect(bus_index, effect_index)
-
-## Returns how many effects are on the given logical [param bus].
-func get_bus_effect_count(bus: AudioEnums.Buses) -> int:
-	var bus_index: int = _bus_cache[bus]
-	return AudioServer.get_bus_effect_count(bus_index)
-
-## Returns the effect at [param effect_index] on the given logical [param bus].
-func get_bus_effect(bus: AudioEnums.Buses, effect_index: int) -> AudioEffect:
-	var bus_index: int = _bus_cache[bus]
-	return AudioServer.get_bus_effect(bus_index, effect_index)
-
-## Enables or disables (bypasses) the effect at [param effect_index] on the given
-## logical [param bus].
-func set_bus_effect_enabled(bus: AudioEnums.Buses, effect_index: int, enabled: bool) -> void:
-	var bus_index: int = _bus_cache[bus]
-	AudioServer.set_bus_effect_enabled(bus_index, effect_index, enabled)
 
 #endregion

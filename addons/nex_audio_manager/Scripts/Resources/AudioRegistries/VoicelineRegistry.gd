@@ -1,6 +1,6 @@
 class_name VoicelineRegistry extends Resource
 
-@export var registry: Dictionary[AudioEnums.Voiceline, SFXEntry] = {}
+@export var registry: Dictionary[StringName, SFXEntry] = {}
 
-func get_entry(voiceline_type: AudioEnums.Voiceline) -> SFXEntry:
-    return registry.get(voiceline_type, null)
+func get_entry(voiceline_key: StringName) -> SFXEntry:
+    return registry.get(voiceline_key, null)

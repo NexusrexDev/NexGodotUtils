@@ -111,10 +111,10 @@ func _handle_voiceline_ended(_player: AudioStreamPlayer) -> void:
 ## Plays a [MusicEntry] from the configured [MusicRegistry]. Crossfades from the
 ## current track over [param crossfade_time] seconds if greater than [code]0.0[/code],
 ## otherwise switches immediately. No-op if music is disabled or the entry is invalid.
-func play_music(music_enum: AudioEnums.Music, crossfade_time: float = 0.0) -> void:
+func play_music(music_key: StringName, crossfade_time: float = 0.0) -> void:
 	if not _config.enable_music:
 		return
-	var entry: MusicEntry = _config.music_registry.get_entry(music_enum)
+	var entry: MusicEntry = _config.music_registry.get_entry(music_key)
 	if not entry:
 		printerr("AudioManager Error: Invalid MusicEntry provided to play_music()")
 		return
@@ -168,10 +168,10 @@ func toggle_music_stem(index: int, enable: bool, fade_time: float = 0.0) -> void
 ## Plays an [SFXEntry] from the pooled 3D SFX voices at a fixed world [param position].
 ## [code]INF[/code] [param pitch]/[param volume] defer to the entry's own jitter ranges.
 ## No-op if 3D SFX is disabled.
-func play_sfx_3d_positioned(sfx_enum: AudioEnums.SFX, position: Vector3, pitch: float = INF, volume: float = INF) -> void:
+func play_sfx_3d_positioned(sfx_key: StringName, position: Vector3, pitch: float = INF, volume: float = INF) -> void:
 	if not _config.enable_3d_sfx:
 		return
-	var entry: SFXEntry = _config.sfx_registry.get_entry(sfx_enum)
+	var entry: SFXEntry = _config.sfx_registry.get_entry(sfx_key)
 	if not entry:
 		printerr("AudioManager Error: Invalid SFXEntry provided to play_sfx_3d_positioned()")
 		return
@@ -180,10 +180,10 @@ func play_sfx_3d_positioned(sfx_enum: AudioEnums.SFX, position: Vector3, pitch: 
 ## Plays an [SFXEntry] from the pooled 3D SFX voices, following [param target] until the sound finishes.
 ## [code]INF[/code] [param pitch]/[param volume] defer to the entry's own jitter ranges.
 ## No-op if 3D SFX is disabled.
-func play_sfx_3d_targeted(sfx_enum: AudioEnums.SFX, target: Node3D, pitch: float = INF, volume: float = INF) -> void:
+func play_sfx_3d_targeted(sfx_key: StringName, target: Node3D, pitch: float = INF, volume: float = INF) -> void:
 	if not _config.enable_3d_sfx:
 		return
-	var entry: SFXEntry = _config.sfx_registry.get_entry(sfx_enum)
+	var entry: SFXEntry = _config.sfx_registry.get_entry(sfx_key)
 	if not entry:
 		printerr("AudioManager Error: Invalid SFXEntry provided to play_sfx_3d_targeted()")
 		return
@@ -196,10 +196,10 @@ func play_sfx_3d_targeted(sfx_enum: AudioEnums.SFX, target: Node3D, pitch: float
 ## 2D equivalent of [method play_sfx_3d_positioned]. 
 ## [code]INF[/code] [param pitch]/[param volume] defer to the entry's own jitter ranges.
 ## No-op if 2D SFX is disabled.
-func play_sfx_2d_positioned(sfx_enum: AudioEnums.SFX, position: Vector2, pitch: float = INF, volume: float = INF) -> void:
+func play_sfx_2d_positioned(sfx_key: StringName, position: Vector2, pitch: float = INF, volume: float = INF) -> void:
 	if not _config.enable_2d_sfx:
 		return
-	var entry: SFXEntry = _config.sfx_registry.get_entry(sfx_enum)
+	var entry: SFXEntry = _config.sfx_registry.get_entry(sfx_key)
 	if not entry:
 		printerr("AudioManager Error: Invalid SFXEntry provided to play_sfx_2d_positioned()")
 		return
@@ -208,10 +208,10 @@ func play_sfx_2d_positioned(sfx_enum: AudioEnums.SFX, position: Vector2, pitch: 
 ## 2D equivalent of [method play_sfx_3d_targeted].
 ## [code]INF[/code] [param pitch]/[param volume] defer to the entry's own jitter ranges.
 ## No-op if 2D SFX is disabled.
-func play_sfx_2d_targeted(sfx_enum: AudioEnums.SFX, target: Node2D, pitch: float = INF, volume: float = INF) -> void:
+func play_sfx_2d_targeted(sfx_key: StringName, target: Node2D, pitch: float = INF, volume: float = INF) -> void:
 	if not _config.enable_2d_sfx:
 		return
-	var entry: SFXEntry = _config.sfx_registry.get_entry(sfx_enum)
+	var entry: SFXEntry = _config.sfx_registry.get_entry(sfx_key)
 	if not entry:
 		printerr("AudioManager Error: Invalid SFXEntry provided to play_sfx_2d_targeted()")
 		return
@@ -224,10 +224,10 @@ func play_sfx_2d_targeted(sfx_enum: AudioEnums.SFX, target: Node2D, pitch: float
 ## Plays a non-positional [SFXEntry] from the nonspatial pool. 
 ## [code]INF[/code] [param pitch]/[param volume] defer to the entry's own jitter ranges.
 ## No-op if nonspatial SFX is disabled.
-func play_sfx_nonspatial(sfx_enum: AudioEnums.SFX, pitch: float = INF, volume: float = INF) -> void:
+func play_sfx_nonspatial(sfx_key: StringName, pitch: float = INF, volume: float = INF) -> void:
 	if not _config.enable_nonspatial_sfx:
 		return
-	var entry: SFXEntry = _config.sfx_registry.get_entry(sfx_enum)
+	var entry: SFXEntry = _config.sfx_registry.get_entry(sfx_key)
 	if not entry:
 		printerr("AudioManager Error: Invalid SFXEntry provided to play_sfx_nonspatial()")
 		return
@@ -237,10 +237,10 @@ func play_sfx_nonspatial(sfx_enum: AudioEnums.SFX, pitch: float = INF, volume: f
 ## pool, so it plays even while the game is paused.
 ## [code]INF[/code] [param pitch]/[param volume] defer to the entry's own jitter ranges.
 ## No-op if UI audio is disabled.
-func play_ui_audio(ui_audio_enum: AudioEnums.UI, pitch: float = INF, volume: float = INF) -> void:
+func play_ui_audio(ui_audio_key: StringName, pitch: float = INF, volume: float = INF) -> void:
 	if not _config.enable_ui_audio:
 		return
-	var entry: SFXEntry = _config.ui_registry.get_entry(ui_audio_enum)
+	var entry: SFXEntry = _config.ui_registry.get_entry(ui_audio_key)
 	if not entry:
 		printerr("AudioManager Error: Invalid UIAudioEntry provided to play_ui_audio()")
 		return
@@ -249,10 +249,10 @@ func play_ui_audio(ui_audio_enum: AudioEnums.UI, pitch: float = INF, volume: flo
 ## Plays a voiceline from the [VoicelineRegistry] and, if [member AudioConfig.enable_ducking_on_voiceline]
 ## is set, ducks music/SFX for its duration. Ducking is released automatically once the
 ## voiceline finishes. No-op if voicelines are disabled.
-func play_voiceline(voiceline_enum: AudioEnums.Voiceline) -> void:
+func play_voiceline(voiceline_key: StringName) -> void:
 	if not _config.enable_voicelines:
 		return
-	var entry: SFXEntry = _config.voiceline_registry.get_entry(voiceline_enum)
+	var entry: SFXEntry = _config.voiceline_registry.get_entry(voiceline_key)
 	if not entry:
 		printerr("AudioManager Error: Invalid VoicelineEntry provided to play_voiceline()")
 		return

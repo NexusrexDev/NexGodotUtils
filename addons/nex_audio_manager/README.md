@@ -14,17 +14,17 @@ A simple plugin that adds an autoload (`AudioManager`) that wraps music, SFX (Sp
 
 ## Filling Registries
 1. Create/open a registry's `.tres` file and expand its `registry` dictionary.
-2. Add an entry per enum value you want to support, e.g. `AudioEnums.SFX.JUMP -> <a resource>`.
+2. Add an entry per `StringName` key you want to support, e.g. `&"jump" -> <a resource>`.
 3. For the value, create a `MusicEntry` or `SFXEntry` inline and fill it in.
 4. Assign the registry to its slots on your `AudioConfig`.
 
 ## Features
 - Simple autoload singleton to interface with the music and sfx submodules, accessed through `AudioManager`. (Check the class' documentation for methods)
 ```gdscript
-AudioManager.play_sfx_nonspatial(AudioEnums.SFX.JUMP)
-AudioManager.play_music(AudioEnums.Music.TRACK_1, 1.5)
+AudioManager.play_sfx_nonspatial(&"jump")
+AudioManager.play_music(&"track_1", 1.5)
 ```
-- Enums to assign entries in the audio busses and the registries, and to call methods instead of referring to `AudioStream` resources. (Add more enum values in `Scripts/Resources/AudioEnums.gd`)
+- `StringName` keys to assign entries in the registries and call methods instead of referring to `AudioStream` resources. Add keys directly to each registry. Bus identifiers remain in `Scripts/Resources/AudioEnums.gd`.
 - Registries with properties for easier use
     - Music Entries allow to assign any type of appropriate `AudioStream` (with API support for `AudioStreamInteractive` and `AudioStreamSynchronized`) along with an audio offset
     - SFX Entries allow to assign an array of `AudioStream`s for random audio selection, plus optional pitch and volume jitter ranges and 2D/3D spatial attenuation settings.

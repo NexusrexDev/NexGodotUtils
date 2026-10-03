@@ -1,6 +1,6 @@
 class_name UIAudioRegistry extends Resource
 
-@export var registry: Dictionary[AudioEnums.UI, SFXEntry] = {}
+@export var registry: Dictionary[StringName, SFXEntry] = {}
 
-func get_entry(ui_type: AudioEnums.UI) -> SFXEntry:
-    return registry.get(ui_type, null)
+func get_entry(ui_key: StringName) -> SFXEntry:
+    return registry.get(ui_key, null)

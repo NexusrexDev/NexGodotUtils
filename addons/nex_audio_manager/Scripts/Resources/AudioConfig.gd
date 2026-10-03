@@ -94,17 +94,17 @@ class_name AudioConfig extends Resource
 @export_range(-24.0, 0.0) var ducking_volume_db: float = -5.0
 
 @export_group("Registries")
-## Registry of [SFXEntry] resources for UI sounds, keyed by [enum AudioEnums.UI].
+## Registry of [SFXEntry] resources for UI sounds, keyed by [StringName] values.
 ## Required when [member enable_ui_audio] is set; hidden otherwise.
 @export var ui_registry: UIAudioRegistry
-## Registry of [SFXEntry] resources for sound effects, keyed by [enum AudioEnums.SFX].
+## Registry of [SFXEntry] resources for sound effects, keyed by [StringName] values.
 ## Required when any of [member enable_nonspatial_sfx], [member enable_2d_sfx], or
 ## [member enable_3d_sfx] is set; hidden when none are.
 @export var sfx_registry: SFXRegistry
-## Registry of [MusicEntry] resources, keyed by [enum AudioEnums.Music]. Required when
+## Registry of [MusicEntry] resources, keyed by [StringName] values. Required when
 ## [member enable_music] is set; hidden otherwise.
 @export var music_registry: MusicRegistry
-## Registry of [SFXEntry] resources for voicelines, keyed by [enum AudioEnums.Voiceline].
+## Registry of [SFXEntry] resources for voicelines, keyed by [StringName] values.
 ## Required when [member enable_voicelines] is set; hidden otherwise.
 @export var voiceline_registry: VoicelineRegistry
 

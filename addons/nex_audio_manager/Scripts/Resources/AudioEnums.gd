@@ -1,10 +1,7 @@
-## Centralized identifiers for the audio system, used in place of raw strings
-## or direct resource references throughout the plugin.
+## Identifiers for the audio system's managed buses.
 ##
-## Each enum here is a lookup key into a corresponding registry (e.g.
-## [AudioEnums.SFX] values are keyed against an [SFXRegistry]), except for
-## [Buses], which identifies the plugin's managed audio buses directly.
-## Extend these enums with your own values as your project grows.
+## Audio registry entries are keyed by [StringName] values supplied by the
+## project. Only buses are kept here because they are managed by the plugin.
 class_name AudioEnums extends RefCounted
 
 ## The logical audio buses this plugin creates and manages. Used both to
@@ -17,32 +14,6 @@ enum Buses
 	SFX,
 	VOICE,
 	UI
-}
-
-## Keys into a [MusicRegistry] to select a [MusicEntry] for [method AudioManager.play_music].
-enum Music
-{
-	TRACK_1,
-	TRACK_2
-}
-
-## Keys into an [SFXRegistry] to select an [SFXEntry] for spatial or
-## nonspatial sound effect playback.
-enum SFX
-{
-	JUMP
-}
-
-## Keys into a [UIAudioRegistry] to select an [SFXEntry] for UI sounds.
-enum UI
-{
-	CLICK
-}
-
-## Keys into a [VoicelineRegistry] to select an [SFXEntry] for voicelines.
-enum Voiceline
-{
-	PLAYER_VO_T1
 }
 
 ## Returns the actual [AudioServer] bus name for a given [enum Buses] value.
